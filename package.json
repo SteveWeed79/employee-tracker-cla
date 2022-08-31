@@ -1,0 +1,25 @@
+{
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "employee-tracker-cms",
+  "description": "",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SteveWeed79/employee-tracker-cms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SteveWeed79/employee-tracker-cms/issues"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.3.3"
+  },
+  "homepage": "https://github.com/SteveWeed79/employee-tracker-cms#readme"
+}
