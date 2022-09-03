@@ -28,9 +28,9 @@ const db = mysql.createConnection(
 
 
 
-function employee() {
+async function employee() {
 
-    inquirer
+    await inquirer
         .prompt([
 
             {
@@ -43,38 +43,38 @@ function employee() {
                 type: 'input',
                 name: 'first_name',
                 message: 'Please enter the employees first name.',
-                when: (answers) => answers.role === 'Add Employee'
+                when: (answers) => answers.tasks === 'Add Employee'
             },
             {
                 type: 'input',
                 name: 'last_name',
                 message: 'Please enter the employees last name.',
-                when: (answers) => answers.role === 'Add Employee'
+                when: (answers) => answers.tasks === 'Add Employee'
             },
             {
                 type: 'input',
                 name: 'addRoleToEmp',
                 message: 'What is the name of the role?',
-                when: (answers) => answers.role === 'Add Employee'
+                when: (answers) => answers.tasks === 'Add Employee'
             },
             {
                 type: 'input',
                 name: 'addRoleTitle',
                 message: 'What is the name of the role?',
-                when: (answers) => answers.role === 'Add Role'
+                when: (answers) => answers.tasks === 'Add Role'
             },
             {
                 type: 'input',
                 name: 'addRoleSalary',
                 message: 'What is the salary for this role?',
-                when: (answers) => answers.role === 'Add Role'
+                when: (answers) => answers.tasks === 'Add Role'
             },
             // {
             //     type: 'list',
             //     name: 'addRoleDept',
             //     message: 'What department is this role in?',
             //     choices: departmentChoices(),
-            //     when: (answers) => answers.role === 'Add Role'
+            //     when: (answers) => answers.tasks === 'Add Role'
             // },
             {
                 type: 'input',
@@ -97,8 +97,8 @@ function employee() {
                     },
                         function (error) {
                             if (error) throw error;
-                            console.log("Department Added!")
                         })
+                    restartApp()
                     break
 
                 case 'Add Role':
@@ -111,19 +111,51 @@ function employee() {
                     },
                         function (error) {
                             if (error) throw error;
-                            console.log("Department Added!")
                         })
+                    restartApp()
                     break
+
                 case 'View All Employees':
                     result = db.query('SELECT * FROM employee;', function (err, result) {
                         console.log(result);
                     })
-
                     break
+
+                case 'Add Employee':
+                    let fName = data.first_name;
+                    let lName = data.last_name;
+                    let empRole = data.addRoleToEmp;
+                    db.query("INSERT INTO employee SET ?", {
+                        first_name: fName,
+                        last_name: lName,
+                        role_id: empRole
+                    },
+                        function (error) {
+                            if (error) throw error;
+                        })
+                    restartApp()
+                    break
+
             }
         })
+};
 
-
+function restartApp() {
+    inquirer
+        .prompt([
+            {
+                type: 'confirm',
+                name: 'restart',
+                message: 'Do you want to continue?'
+            },
+        ])
+        .then((data) => {
+            if (!data.restart) {
+                process.exit()
+            } else {
+                employee()
+            }
+        })
 };
 
 
