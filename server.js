@@ -1,19 +1,8 @@
-const express = require('express');
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-// const departmentChoices = async () => {
-//     const departmentQuery = `SELECT id AS value, name FROM department;`;
-//     const departments = await db.query(departmentQuery);
-//     return departments[0];
-// };
 
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 const db = mysql.createConnection(
     {
@@ -25,10 +14,16 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_db database.`)
 );
 
+const departmentChoices = async () => {
+    const departmentQuery = `SELECT id AS value, name FROM department;`;
+    return await db.promise().query(departmentQuery);
 
+};
 
 
 async function employee() {
+
+    const departments = await departmentChoices();
 
     await inquirer
         .prompt([
@@ -45,6 +40,7 @@ async function employee() {
                 message: 'Please enter the employees first name.',
                 when: (answers) => answers.tasks === 'Add Employee'
             },
+
             {
                 type: 'input',
                 name: 'last_name',
@@ -69,13 +65,13 @@ async function employee() {
                 message: 'What is the salary for this role?',
                 when: (answers) => answers.tasks === 'Add Role'
             },
-            // {
-            //     type: 'list',
-            //     name: 'addRoleDept',
-            //     message: 'What department is this role in?',
-            //     choices: departmentChoices(),
-            //     when: (answers) => answers.tasks === 'Add Role'
-            // },
+            {
+                type: 'list',
+                name: 'addRoleDept',
+                message: 'What department is this role in?',
+                choices: departments[0],
+                when: (answers) => answers.tasks === 'Add Role'
+            },
             {
                 type: 'input',
                 name: 'addDept',
@@ -116,8 +112,8 @@ async function employee() {
                     break
 
                 case 'View All Employees':
-                    result = db.query('SELECT * FROM employee;', function (err, result) {
-                        console.log(result);
+                    db.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;', function (err, result) {
+                        console.table(result)
                     })
                     break
 
@@ -164,12 +160,6 @@ function restartApp() {
 //     console.log(results);
 // });
 
-app.use((req, res) => {
-    res.status(404).end();
-});
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
 
 employee()
