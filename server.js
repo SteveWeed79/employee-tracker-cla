@@ -31,6 +31,9 @@ async function employee() {
     const departments = await departmentChoices();
     const roles = await roleChoices();
 
+    let roletitles = roles[0].map((obj) => obj.titles)
+
+
     await inquirer
         .prompt([
 
@@ -57,7 +60,7 @@ async function employee() {
                 type: 'list',
                 name: 'addRoleToEmp',
                 message: 'What is the employees role?',
-                choices: roles[0],
+                choices: roletitles,
                 when: (answers) => answers.tasks === 'Add Employee'
             },
             {
@@ -84,6 +87,19 @@ async function employee() {
                 name: 'addDept',
                 message: 'What is the name of the department you would like to add?',
                 when: (answers) => answers.tasks === 'Add Department'
+            },
+            {
+                type: 'list',
+                name: 'updateEmpName',
+                message: 'Which employee would you like to update?',
+                when: (answers) => answers.tasks === 'Update Employee'
+            },
+            {
+                type: 'list',
+                name: 'updateRole',
+                message: 'What is the employees new title?',
+                choices: roles[0],
+                when: (answers) => answers.tasks === 'Update Employee Role'
             },
 
         ])
@@ -134,6 +150,8 @@ async function employee() {
                     let fName = data.first_name;
                     let lName = data.last_name;
                     let empRole = data.addRoleToEmp;
+                    console.log("empRole", empRole);
+
                     db.query("INSERT INTO employee SET ?", {
                         first_name: fName,
                         last_name: lName,
