@@ -26,7 +26,7 @@ const roleChoices = async () => {
 };
 
 const empNames = async () => {
-    const nameQuery = `SELECT id AS value, first_name, last_name AS name FROM employee`
+    const nameQuery = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee`
     return await db.promise().query(nameQuery)
 }
 
@@ -97,7 +97,7 @@ async function employee() {
                 type: 'list',
                 name: 'updateEmpName',
                 message: 'Which employee would you like to update?',
-                choices: names,
+                choices: names[0],
                 when: (answers) => answers.tasks === 'Update Employee Role'
             },
             {
