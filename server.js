@@ -25,11 +25,17 @@ const roleChoices = async () => {
     return await db.promise().query(roleQuery);
 };
 
+const empNames = async () => {
+    const nameQuery = `SELECT id AS value, first_name, last_name AS name FROM employee`
+    return await db.promise().query(nameQuery)
+}
+
 
 async function employee() {
 
     const departments = await departmentChoices();
     const roles = await roleChoices();
+    const names = await empNames();
 
 
 
@@ -91,7 +97,8 @@ async function employee() {
                 type: 'list',
                 name: 'updateEmpName',
                 message: 'Which employee would you like to update?',
-                when: (answers) => answers.tasks === 'Update Employee'
+                choices: names,
+                when: (answers) => answers.tasks === 'Update Employee Role'
             },
             {
                 type: 'list',
