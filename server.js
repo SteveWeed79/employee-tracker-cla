@@ -186,6 +186,14 @@ async function employee() {
                     restartApp()
                     break
 
+                case 'Update Employee Role':
+                    let newRole = data.updateRole;
+                    let newID = data.updateEmpName;
+                    let updateEMP = `UPDATE employee SET role_id = ${newRole} WHERE ID = ${newID}`
+                    db.query(updateEMP)
+                    restartApp()
+                    break
+
                 case 'Quit':
                     process.exit();
             }
