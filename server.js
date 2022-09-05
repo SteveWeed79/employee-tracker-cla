@@ -11,7 +11,7 @@ const db = mysql.createConnection(
         password: 'password',
         database: 'employee_db'
     },
-    console.log(`Connected to the employee_db database.`)
+
 );
 
 const departmentChoices = async () => {
@@ -20,10 +20,16 @@ const departmentChoices = async () => {
 
 };
 
+const roleChoices = async () => {
+    const roleQuery = `SELECT id AS value, title FROM role;`;
+    return await db.promise().query(roleQuery);
+};
+
 
 async function employee() {
 
     const departments = await departmentChoices();
+    const roles = await roleChoices();
 
     await inquirer
         .prompt([
@@ -32,7 +38,7 @@ async function employee() {
                 type: 'list',
                 name: 'tasks',
                 message: 'What would you like to do?',
-                choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View Departments', 'Add Department']
+                choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit']
             },
             {
                 type: 'input',
@@ -48,9 +54,10 @@ async function employee() {
                 when: (answers) => answers.tasks === 'Add Employee'
             },
             {
-                type: 'input',
+                type: 'list',
                 name: 'addRoleToEmp',
-                message: 'What is the name of the role?',
+                message: 'What is the employees role?',
+                choices: roles[0],
                 when: (answers) => answers.tasks === 'Add Employee'
             },
             {
@@ -94,20 +101,24 @@ async function employee() {
                         function (error) {
                             if (error) throw error;
                         })
+
                     restartApp()
                     break
 
                 case 'Add Role':
-                    let title = data.addRoleDept
+                    let title = data.addRoleTitle
                     let salary = data.addRoleSalary
+                    let name = data.addRoleDept
 
-                    db.query("INSERT INTO department SET ?", {
+                    db.query("INSERT INTO role SET ?", {
                         title: title,
                         salary: salary,
+                        department_id: name
                     },
                         function (error) {
                             if (error) throw error;
                         })
+
                     restartApp()
                     break
 
@@ -115,6 +126,8 @@ async function employee() {
                     db.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;', function (err, result) {
                         console.table(result)
                     })
+
+                    restartApp()
                     break
 
                 case 'Add Employee':
@@ -132,11 +145,33 @@ async function employee() {
                     restartApp()
                     break
 
+                case 'View All Roles':
+                    db.query('SELECT role.title, role.salary, department.name FROM role LEFT JOIN department ON role.department_id = department.id;',
+                        function (err, result) {
+                            console.table(result)
+                            console.log(err)
+                        })
+
+                    restartApp()
+                    break
+
+                case 'View All Departments':
+                    db.query('SELECT * FROM department;',
+                        function (err, result) {
+                            console.table(result)
+                        })
+
+                    restartApp()
+                    break
+
+                case 'Quit':
+                    process.exit();
             }
         })
 };
 
-function restartApp() {
+async function restartApp() {
+    await new Promise(resolve => setTimeout(resolve, 100));
     inquirer
         .prompt([
             {
@@ -154,11 +189,6 @@ function restartApp() {
         })
 };
 
-
-
-// db.query('SELECT * FROM employee', function (err, results) {
-//     console.log(results);
-// });
 
 
 
