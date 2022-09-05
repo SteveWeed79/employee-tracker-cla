@@ -145,8 +145,9 @@ async function employee() {
                     break
 
                 case 'View All Employees':
-                    db.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, manager_id FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;', function (err, result) {
+                    db.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, manager.first_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id', function (err, result) {
                         console.table(result)
+                        console.log(err)
                     })
 
                     restartApp()
