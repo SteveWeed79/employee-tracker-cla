@@ -38,7 +38,7 @@ async function employee() {
                 type: 'list',
                 name: 'tasks',
                 message: 'What would you like to do?',
-                choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit']
+                choices: ['View All Employees', 'View All Roles', 'View All Departments', 'Add Employee', 'Update Employee Role', 'Add Role', 'Add Department', 'Quit']
             },
             {
                 type: 'input',
@@ -82,7 +82,7 @@ async function employee() {
             {
                 type: 'input',
                 name: 'addDept',
-                message: 'What department number would you like to add?',
+                message: 'What is the name of the department you would like to add?',
                 when: (answers) => answers.tasks === 'Add Department'
             },
 
