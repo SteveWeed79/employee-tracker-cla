@@ -21,7 +21,7 @@ const departmentChoices = async () => {
 };
 
 const roleChoices = async () => {
-    const roleQuery = `SELECT id AS value, title FROM role;`;
+    const roleQuery = `SELECT id AS value, title AS name FROM role;`;
     return await db.promise().query(roleQuery);
 };
 
@@ -31,7 +31,6 @@ async function employee() {
     const departments = await departmentChoices();
     const roles = await roleChoices();
 
-    let roletitles = roles[0].map((obj) => obj.titles)
 
 
     await inquirer
@@ -60,7 +59,7 @@ async function employee() {
                 type: 'list',
                 name: 'addRoleToEmp',
                 message: 'What is the employees role?',
-                choices: roletitles,
+                choices: roles[0],
                 when: (answers) => answers.tasks === 'Add Employee'
             },
             {
@@ -150,8 +149,6 @@ async function employee() {
                     let fName = data.first_name;
                     let lName = data.last_name;
                     let empRole = data.addRoleToEmp;
-                    console.log("empRole", empRole);
-
                     db.query("INSERT INTO employee SET ?", {
                         first_name: fName,
                         last_name: lName,
