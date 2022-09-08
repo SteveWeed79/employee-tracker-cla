@@ -107,7 +107,32 @@ async function employee() {
                 choices: roles[0],
                 when: (answers) => answers.tasks === 'Update Employee Role'
             },
-
+            {
+                type: 'confirm',
+                name: 'hasManager',
+                message: 'Does This employee have a manager?',
+                when: (answers) => answers.tasks === 'Add Employee'
+            },
+            {
+                type: 'confirm',
+                name: 'hasManager2',
+                message: 'Does This employee have a manager?',
+                when: (answers) => answers.tasks === 'Update Employee Role'
+            },
+            {
+                type: 'list',
+                name: 'addManagerToEmp',
+                message: 'Name of the manager for this employee?',
+                choices: names[0],
+                when: (answers) => answers.hasManager === true
+            },
+            {
+                type: 'list',
+                name: 'updateManagerToEmp',
+                message: 'Name of the manager for this employee?',
+                choices: names[0],
+                when: (answers) => answers.hasManager2 === true
+            },
         ])
 
         .then((data) => {
@@ -157,10 +182,12 @@ async function employee() {
                     let fName = data.first_name;
                     let lName = data.last_name;
                     let empRole = data.addRoleToEmp;
+                    let managerID = data.addManagerToEmp;
                     db.query("INSERT INTO employee SET ?", {
                         first_name: fName,
                         last_name: lName,
-                        role_id: empRole
+                        role_id: empRole,
+                        manager_id: managerID
                     },
                         function (error) {
                             if (error) throw error;
@@ -190,10 +217,27 @@ async function employee() {
                 case 'Update Employee Role':
                     let newRole = data.updateRole;
                     let newID = data.updateEmpName;
-                    let updateEMP = `UPDATE employee SET role_id = ${newRole} WHERE ID = ${newID}`
-                    db.query(updateEMP)
+                    var managerID2
+                    console.log(newRole, newID)
+                    if (!data.updateManagerToEmp) {
+                        managerID2 = 'Null'
+
+                    } else {
+                        managerID2 = data.updateManagerToEmp
+                    };
+                    console.log(managerID2)
+
+                    // let updateEMP = `UPDATE employee SET role_id = ${newID}, {role_id: ${newRole},
+                    //     manager_id: ${managerID2}} `
+                    db.query(`UPDATE employee SET = ? `, {
+                        role_id: newRole,
+                        manager_id: managerID2
+                            `WHERE employee.id = ${newID}`
+                    })
+
                     restartApp()
                     break
+
 
                 case 'Quit':
                     process.exit();
@@ -215,6 +259,7 @@ async function restartApp() {
             if (!data.restart) {
                 process.exit()
             } else {
+                data.hasManager = false
                 employee()
             }
         })
