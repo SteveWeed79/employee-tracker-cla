@@ -172,7 +172,7 @@ async function employee() {
                 case 'View All Employees':
                     db.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, manager.first_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id', function (err, result) {
                         console.table(result)
-                        
+
                     })
 
                     restartApp()
@@ -199,7 +199,7 @@ async function employee() {
                     db.query('SELECT role.title, role.salary, department.name FROM role LEFT JOIN department ON role.department_id = department.id;',
                         function (err, result) {
                             console.table(result)
-                            
+
                         })
 
                     restartApp()
@@ -227,10 +227,10 @@ async function employee() {
 
                     db.query(`UPDATE employee SET ? WHERE employee.id = ?`, [{
                         role_id: newRole,
-                        manager_id: managerID2    
+                        manager_id: managerID2
                     }
-                    ,newID
-                ])
+                        , newID
+                    ])
 
                     restartApp()
                     break
