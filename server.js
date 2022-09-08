@@ -172,7 +172,7 @@ async function employee() {
                 case 'View All Employees':
                     db.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, manager.first_name AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id', function (err, result) {
                         console.table(result)
-                        console.log(err)
+                        
                     })
 
                     restartApp()
@@ -199,7 +199,7 @@ async function employee() {
                     db.query('SELECT role.title, role.salary, department.name FROM role LEFT JOIN department ON role.department_id = department.id;',
                         function (err, result) {
                             console.table(result)
-                            console.log(err)
+                            
                         })
 
                     restartApp()
@@ -218,22 +218,19 @@ async function employee() {
                     let newRole = data.updateRole;
                     let newID = data.updateEmpName;
                     var managerID2
-                    console.log(newRole, newID)
                     if (!data.updateManagerToEmp) {
-                        managerID2 = 'Null'
+                        managerID2 = null
 
                     } else {
                         managerID2 = data.updateManagerToEmp
                     };
-                    console.log(managerID2)
 
-                    // let updateEMP = `UPDATE employee SET role_id = ${newID}, {role_id: ${newRole},
-                    //     manager_id: ${managerID2}} `
-                    db.query(`UPDATE employee SET = ? `, {
+                    db.query(`UPDATE employee SET ? WHERE employee.id = ?`, [{
                         role_id: newRole,
-                        manager_id: managerID2
-                            `WHERE employee.id = ${newID}`
-                    })
+                        manager_id: managerID2    
+                    }
+                    ,newID
+                ])
 
                     restartApp()
                     break
