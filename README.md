@@ -16,27 +16,28 @@ You will need to run npm install to download the needed packages to run this cor
 
 ## Usage
 
-Use npm start in the command line to run the application.  Make sure you are in the parent directory for the application.
+### Use npm start in the command line to run the application.  Make sure you are in the parent directory for the application.
 ![alt text](assets/images/screenshot%201.JPG)
-<br />
+
 <br />
 
-
-Once the application has started select the option you need and follow the prompts.
+### Once the application has started select the option you need and follow the prompts.
 ![alt text](assets/images/screenshot2.JPG)
 <br />
-<br />
 
-Below is a example of selecting "View All Employees"
+### Below is a example of selecting "View All Employees"
 ![alt text](assets/images/screenshot3.JPG)
-<br />
+
 <br />
 
-
-Below is a example of selecting "Add Employee".  The prompts are a combination of user inputs and list selections.
+### Below is a example of selecting "Add Employee".  The prompts are a combination of user inputs and list selections.
 ![alt text](assets/images/screenshot4.JPG)
+
 <br />
-<br />
+
+Here is a link to show the different features of the application.
+https://drive.google.com/file/d/1iuAtx2GfuLRPxUdGLoxlfde_bQJuMDEp/view
+
 
 ## License
 
